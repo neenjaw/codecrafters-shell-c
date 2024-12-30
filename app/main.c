@@ -25,6 +25,7 @@ void parse_argv_from_input(char *input, char *argv[], int *argc, const int max_a
     argv[(*argc)++] = token;
     token = strtok(NULL, " ");
   }
+  argv[*argc] = NULL;
 }
 
 typedef int (*command_handler_t)(char *argv[]);
@@ -107,7 +108,7 @@ int main()
     input[strcspn(input, "\n")] = '\0';
 
     // Parse input into argv
-    char *argv[MAX_ARGV] = {NULL};
+    char *argv[MAX_ARGV];
     int argc = 0;
     parse_argv_from_input(input, argv, &argc, MAX_ARGV);
 
