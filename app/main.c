@@ -44,8 +44,35 @@ int exit_command(char *argv[])
   exit(code);
 }
 
+int echo_command(char *argv[])
+{
+  const int FIRST = 1;
+  for (int i = FIRST; i < MAX_ARGV; i++)
+  {
+    if (argv[i] == NULL)
+    {
+      break;
+    }
+
+    if (i == FIRST)
+    {
+      printf("%s", argv[i]);
+    }
+    else
+    {
+      printf(" %s", argv[i]);
+    }
+  }
+  printf("\n");
+  return 0;
+}
+
+/**
+ * List of commands
+ */
 struct command commands[] = {
-    {"exit", &exit_command}};
+    {"exit", &exit_command},
+    {"echo", &echo_command}};
 
 /**
  * Get the command handler for the given command
@@ -77,10 +104,10 @@ int main()
     fgets(input, MAX_INPUT_LENGTH, stdin);
 
     // Remove trailing newline
-    input[strcspn(input, "\n")] = 0;
+    input[strcspn(input, "\n")] = '\0';
 
     // Parse input into argv
-    char *argv[MAX_ARGV];
+    char *argv[MAX_ARGV] = {NULL};
     int argc = 0;
     parse_argv_from_input(input, argv, &argc, MAX_ARGV);
 
