@@ -6,6 +6,28 @@
 const int MAX_INPUT_LENGTH = 100;
 const int MAX_ARGV = 10;
 
+typedef int (*command_handler_t)(char *argv[]);
+
+struct command
+{
+  const char *name;
+  command_handler_t handler;
+};
+
+// Command function prototypes
+int exit_command(char *argv[]);
+int echo_command(char *argv[]);
+int type_command(char *argv[]);
+command_handler_t get_command_handler(const char *command);
+
+/**
+ * List of commands
+ */
+struct command commands[] = {
+    {"exit", &exit_command},
+    {"echo", &echo_command},
+    {"type", &type_command}};
+
 bool str_starts_with(const char *str, const char *prefix)
 {
   return strncmp(str, prefix, strlen(prefix)) == 0;
@@ -27,14 +49,6 @@ void parse_argv_from_input(char *input, char *argv[], int *argc, const int max_a
   }
   argv[*argc] = NULL;
 }
-
-typedef int (*command_handler_t)(char *argv[]);
-
-struct command
-{
-  const char *name;
-  command_handler_t handler;
-};
 
 /**
  * Exit command handler
@@ -68,12 +82,25 @@ int echo_command(char *argv[])
   return 0;
 }
 
-/**
- * List of commands
- */
-struct command commands[] = {
-    {"exit", &exit_command},
-    {"echo", &echo_command}};
+int type_command(char *argv[])
+{
+  const char *command_name = argv[1];
+  if (command_name == NULL)
+  {
+    printf("type: missing command argument\n");
+    return 1;
+  }
+
+  command_handler_t handler = get_command_handler(command_name);
+  if (handler != NULL)
+  {
+    printf("%s is a shell builtin\n", command_name);
+    return 0;
+  }
+
+  printf("%s: not found\n", command_name);
+  return 1;
+}
 
 /**
  * Get the command handler for the given command
