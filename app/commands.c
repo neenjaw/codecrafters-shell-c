@@ -57,15 +57,33 @@ int exec_command(char *argv[], const config_t *config)
     return 1;
   }
 
-  if (execv(full_path, argv + command_index) == -1)
+  pid_t pid = fork();
+  if (pid == -1)
   {
-    perror("execv");
+    perror("fork");
     free(full_path);
     return 1;
   }
+  else if (pid == 0)
+  {
+    // Child process
+    int status = execv(full_path, argv + command_index);
+    if (status == -1)
+    {
+      perror("execv");
+    }
 
-  free(full_path);
-  return 0;
+    free(full_path);
+    return status;
+  }
+  else
+  {
+    // Parent process
+    int status;
+    waitpid(pid, &status, 0);
+    free(full_path);
+    return status;
+  }
 }
 
 int type_command(char *argv[], const config_t *config)

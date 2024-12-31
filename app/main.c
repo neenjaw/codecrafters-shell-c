@@ -10,7 +10,6 @@ int main()
 
   while (true)
   {
-    printf("loop start\n");
     // Print prompt
     printf("$ ");
 
