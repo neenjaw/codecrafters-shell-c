@@ -10,26 +10,25 @@
 #define MAX_INPUT_LENGTH 100
 #define MAX_ARGV 10
 
-struct config
+typedef struct
 {
-  char *path;
-};
-extern struct config config;
+  const char *path;
+} config_t;
 
-typedef int (*command_handler_t)(char *argv[]);
+typedef int (*command_handler_t)(char *argv[], const config_t *config);
 
-struct command
+typedef struct
 {
   const char *name;
   command_handler_t handler;
-};
-extern struct command commands[];
+} command_t;
 
 // Command function prototypes
-int exit_command(char *argv[]);
-int echo_command(char *argv[]);
-int type_command(char *argv[]);
-command_handler_t get_command_handler(const char *command);
+int exit_command(char *argv[], const config_t *config);
+int echo_command(char *argv[], const config_t *config);
+int type_command(char *argv[], const config_t *config);
+command_handler_t get_command_handler(const char *command_name);
+char *find_command_in_path(const config_t *config, const char *command_name);
 
 // Helper function prototypes
 void parse_argv_from_input(char *input, char *argv[], int *argc, const int max_args);

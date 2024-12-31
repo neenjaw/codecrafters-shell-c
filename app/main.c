@@ -2,6 +2,9 @@
 
 int main()
 {
+  const config_t shell_config = {
+      .path = getenv("PATH")};
+
   // Flush after every printf
   setbuf(stdout, NULL);
 
@@ -31,7 +34,7 @@ int main()
 
     if (handler != NULL)
     {
-      handler(argv);
+      handler(argv, &shell_config);
     }
     else
     {
