@@ -10,6 +10,7 @@ int main()
 
   while (true)
   {
+    printf("loop start\n");
     // Print prompt
     printf("$ ");
 
@@ -38,7 +39,7 @@ int main()
     }
     else
     {
-      printf("%s: command not found\n", input);
+      exec_command(argv, &shell_config);
     }
   }
 

@@ -3,16 +3,8 @@
 command_t commands[] = {
     {"exit", &exit_command},
     {"echo", &echo_command},
-    {"type", &type_command}};
-
-/**
- * Exit command handler
- */
-int exit_command(char *argv[], const config_t *config)
-{
-  int code = strtol(argv[1], NULL, 10);
-  exit(code);
-}
+    {"type", &type_command},
+    {"exec", &exec_command}};
 
 int echo_command(char *argv[], const config_t *config)
 {
@@ -34,6 +26,45 @@ int echo_command(char *argv[], const config_t *config)
     }
   }
   printf("\n");
+  return 0;
+}
+
+/**
+ * Exit command handler
+ */
+int exit_command(char *argv[], const config_t *config)
+{
+  int code = strtol(argv[1], NULL, 10);
+  exit(code);
+}
+
+int exec_command(char *argv[], const config_t *config)
+{
+  int command_index = 0;
+  if (strcmp(argv[0], "exec") == 0)
+  {
+    command_index = 1;
+  }
+  else
+  {
+    command_index = 0;
+  }
+  char *full_path = find_command_in_path(config, argv[command_index]);
+
+  if (full_path == NULL)
+  {
+    printf("%s: command not found\n", argv[command_index]);
+    return 1;
+  }
+
+  if (execv(full_path, argv + command_index) == -1)
+  {
+    perror("execv");
+    free(full_path);
+    return 1;
+  }
+
+  free(full_path);
   return 0;
 }
 
@@ -80,6 +111,9 @@ command_handler_t get_command_handler(const char *command_name)
   return NULL;
 }
 
+/**
+ * Find the command in the PATH environment variable
+ */
 char *find_command_in_path(const config_t *config, const char *command_name)
 {
   char *path = strdup(config->path);

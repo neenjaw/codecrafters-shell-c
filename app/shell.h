@@ -24,8 +24,9 @@ typedef struct
 } command_t;
 
 // Command function prototypes
-int exit_command(char *argv[], const config_t *config);
 int echo_command(char *argv[], const config_t *config);
+int exit_command(char *argv[], const config_t *config);
+int exec_command(char *argv[], const config_t *config);
 int type_command(char *argv[], const config_t *config);
 command_handler_t get_command_handler(const char *command_name);
 char *find_command_in_path(const config_t *config, const char *command_name);
